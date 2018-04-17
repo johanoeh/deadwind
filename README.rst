@@ -1,0 +1,3 @@
+Deadwind is a simple program with a graphical user interface that converts an,
+MS excel schedule file from  to a csv file suited to be imported in google calendar.
+To do ....

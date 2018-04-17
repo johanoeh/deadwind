@@ -1,7 +1,7 @@
 from setuptools import setup
 setup(name='deadwind',
       version='0.2',
-      description='converts Medvinds xsls (MS excell) shedule data to csv',
+      description='Converts Medvinds xsls (MS excell) shedule data to csv data suitable for export to google calendar',
       url='',
       author='Johan Oh',
       author_email='johan.oh1980@gmail.com',

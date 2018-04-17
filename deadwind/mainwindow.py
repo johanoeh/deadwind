@@ -22,7 +22,7 @@ class MainWindow:
 
         # Add a grid
         self.mainframe = Frame(root)
-        self.mainframe.grid(column=0,row=0, sticky=(N,W,E,S) )
+        self.mainframe.grid(column = 0, row = 0, sticky=(N,W,E,S) )
         self.mainframe.columnconfigure(0, weight = 1)
         self.mainframe.rowconfigure(0, weight = 1)
         self.mainframe.pack(pady = 20, padx = 10)
