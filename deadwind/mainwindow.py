@@ -17,7 +17,6 @@ class MainWindow:
 
         root = tkinter.Tk()
         root.wm_title("Motvind")
-        print(dir_path)
         root.iconbitmap(dir_path+r'\resources\cbt.ico')
 
         # Add a grid
