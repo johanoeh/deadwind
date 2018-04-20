@@ -1,5 +1,5 @@
+from events import Event
 import re
-from .events import Event
 
 class TimeParser:
 

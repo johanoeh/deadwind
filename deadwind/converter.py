@@ -1,8 +1,8 @@
 #
 from openpyxl import load_workbook
-from .csvio import DAO as DAO
-from .events import *
-from .xparser import TimeParser as TP
+from csvio import DAO as DAO
+from events import *
+from xparser import TimeParser as TP
 
 #
 # Converts medvinds format to a csv format suited for google calendat
@@ -11,16 +11,17 @@ class ScheduleConverter :
     def __init__(self):
         self.sheetName = "Medvind"
         self.dao = DAO()
+        settings=self.dao.readSettings();
         self.events = []
         self.tp = TP(Event(
-                        "Arbete",
+                         settings['subject'],
                          None,
                          None,
                          None,
                          None,
                          False,
-                         "107",
-                         "Nya hamngatan 13",
+                         settings['description'],
+                         settings['location'],
                          False
                          ))
     def  convert(self,input,output) :

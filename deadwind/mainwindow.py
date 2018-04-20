@@ -1,12 +1,15 @@
-from .converter import ScheduleConverter
+from converter import ScheduleConverter
 from  tkinter import *
 from tkinter import filedialog
 import tkinter.messagebox
 import logging
 import os
+from settings import SettingsController
 dir_path = os.path.dirname(os.path.realpath(__file__))
+lang_main = {'browse':'Bläddra','convert':'konvertera','deadwind':'Motvind', 'settings':'Inställningar','quit':'Avsluta'}
+
 class MainWindow:
-    def __init__(self):
+    def __init__(self, lang):
         self.selectBTNText = "Bläddra"
         self.saveBTNText = "konvertera"
         self.sc = ScheduleConverter()
@@ -16,6 +19,10 @@ class MainWindow:
         self.saveFileEntry = None
 
         root = tkinter.Tk()
+        menubar = Menu(root)
+        menubar.add_command(label=lang['settings'], command=self.openSettings)
+        menubar.add_command(label=lang['quit'], command=root.quit)
+        root.config(menu=menubar)
         root.wm_title("Motvind")
         root.iconbitmap(dir_path+r'\resources\cbt.ico')
 
@@ -44,6 +51,9 @@ class MainWindow:
         entry.delete(0,END)
         entry.insert(0,text)
 
+    def openSettings(self):
+        SettingsController()
+
     def selectFile(self):
         self.selectFileName = (
         filedialog.askopenfilename(initialdir = dir_path,title = "Select file",filetypes = (("csv  files xlsx","*.xlsx"),("all files","*.*"))))
@@ -52,12 +62,14 @@ class MainWindow:
     def saveFile(self):
         self.selectFileName = self.addFileEntry.get();
         self.saveFileName = filedialog.asksaveasfilename(initialdir = dir_path,title = "Select file",filetypes = (("csv files","*.csv"),("all files","*.*")))
+        self.listBox.delete(0,tkinter.END)
         try:
-            events = self.sc.convert(self.selectFileName, self.saveFileName)
+            events = ScheduleConverter().convert(self.selectFileName, self.saveFileName)
             self.setText("konverteringen klar!", self.addFileEntry)
             for event in events:
                 self.listBox.insert(END, event.toCSV())
         except FileNotFoundError as e:
             var = tkinter.messagebox.showinfo("Filen kunde inte hittas"," Fel filen med sökväg \' "+self.selectFileName+"  \' kunde inte hittas!")
         except Exception as e:
-            loggin.exception("Something went wrong while parsing the file")
+            logging.exception("Something went wrong while parsing the file")
+MainWindow(lang_main)

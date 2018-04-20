@@ -1,5 +1,6 @@
 import events
 import tkinter
+from csvio import DAO
 
 #TextFields subject, description and location
 lang = {
@@ -10,18 +11,19 @@ lang = {
           "description" : "beskrivning",
           "location" : "plats"
         }
-class settings_view:
-    def __init__(self,lang):
 
-        root = tkinter.Tk()
-        root.wm_title("Inställningar")
-        self.mainframe = tkinter.Frame(root)
+class SettingsView:
+    def __init__(self,lang,settings):
+        self.settings = settings
+        self.saveBTNClick = Event()
+        self.root = tkinter.Toplevel()
+        self.root.wm_title(lang['settings'])
+
+        self.mainframe = tkinter.Frame(self.root)
         self.mainframe.grid(column = 0, row = 0, sticky=(tkinter.N,tkinter.W,tkinter.E,tkinter.S) )
         self.mainframe.columnconfigure(0, weight = 1)
         self.mainframe.rowconfigure(0, weight = 1)
         self.mainframe.pack(pady = 20, padx = 10)
-
-
 
         ## first row of grid
         ########################################################################
@@ -47,7 +49,7 @@ class settings_view:
 
         ## Fourth row of grid
         ########################################################################
-
+        # A wrappert for the buttons
         self.btnWrapper = tkinter.Frame(self.mainframe)
         self.btnWrapper.grid(row=3, column=1, pady=15)
 
@@ -69,8 +71,7 @@ class settings_view:
                                     )
         self.clearBTN.grid(row=0, column=1, padx=5)
 
-
-        root.mainloop()
+        self.setTextFields()
 
     def addText(self,ro,col):
         text = tkinter.Text( self.mainframe, height = "4", width = 40 )
@@ -103,13 +104,49 @@ class settings_view:
         return entry
 
     def save(self):
-        print(
-                self.subjectEntry.get(),
-                self.descText.get("1.0",tkinter.END),
-                self.locationText.get("1.0",tkinter.END)
-            )
+        subject = self.subjectEntry.get()
+        description = self.descText.get("1.0",tkinter.END)
+        location = self.locationText.get("1.0",tkinter.END)
+        self.saveBTNClick.notify({'subject':subject, 'description':description, 'location':location})
+
+    def setTextFields(self):
+        self.setEntry(self.settings['subject'], self.subjectEntry)
+        self.setText(self.settings['description'], self.descText)
+        self.setText(self.settings['location'], self.locationText)
+
 
     def clear(self):
-        print("clear")
+        self.subjectEntry.delete(0,tkinter.END)
+        self.descText.delete("1.0",tkinter.END)
+        self.locationText.delete("1.0",tkinter.END)
 
-settingsView = settings_view(lang)
+    def setEntry(self, text, entry):
+        entry.delete(0,tkinter.END)
+        entry.insert(0,text)
+
+    def setText(self,value,text):
+        text.delete("1.0",tkinter.END)
+        text.insert("1.0",value)
+
+
+class Event:
+    def __init__(self):
+        self.listeners = []
+    def notify(self, msg):
+        for callBack in self.listeners :
+            callBack(msg)
+    def addListener(self, callBack):
+        self.listeners.append(callBack)
+
+class SettingsController:
+
+    def __init__(self):
+        self.dao = DAO()
+        self.settingsView = SettingsView(lang, self.dao.readSettings())
+        self.settingsView.root.grab_set()
+        self.settingsView.saveBTNClick.addListener(self.saveSettings)
+
+    def saveSettings(self,settings):
+        settings['isAllDayEvent'] = 'False'
+        settings['isPrivate'] = 'False'
+        self.dao.createSettings(settings)
