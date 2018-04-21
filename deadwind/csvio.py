@@ -1,14 +1,17 @@
 from openpyxl import load_workbook
 import configparser
+import csv
+import codecs
 class DAO:
     def __init__(self):
         self.headerString ="subject,Start date,Start time,End date,End time,All Day Event,Description,Location, Private";
         self.settingsFile = "deadwind.settings"
     def createCSV(self,fileName,events):
-        file = open(fileName,"w")
+        file = codecs.open(fileName, "w", "utf-8")
+        w = csv.writer(file)
         file.write(self.headerString+"\n")
         for event in events:
-            file.write(event.toCSV()+"\n")
+            w.writerow(event.toList())
         file.close()
     def readWorkBook(self,resource):
         return load_workbook(resource)

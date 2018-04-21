@@ -21,18 +21,16 @@ class Event :
         self.description = description
         self.location = location
         self.isPrivate = isPrivate
-
-    def toCSV(self):
-              return (
-                         self.subject+","+
-                         self.startDate+","+
-                         self.startTime+","+
-                         self.endDate+","+
-                         self.endTime+","+
-                         str(self.isAllDayEvent)+","+
-                         self.description+","+
-                         self.location+","+
-                         str(self.isPrivate)
-                     );
+        
+    def toList(self):
+        return [ self.subject,
+                 self.startDate,
+                 self.startTime,
+                 self.endDate,
+                 self.endTime,
+                 str(self.isAllDayEvent),
+                 self.description,
+                 self.location,
+                 str(self.isPrivate)]
     def toICAL(self):
         print("to implement")

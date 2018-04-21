@@ -5,15 +5,21 @@ import tkinter.messagebox
 import logging
 import os
 from settings import SettingsController
-dir_path = os.path.dirname(os.path.realpath(__file__))
-lang_main = {'browse':'Bläddra','convert':'konvertera','deadwind':'Motvind', 'settings':'Inställningar','quit':'Avsluta'}
+import settings
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+lang_main = {
+    'browse':'Bläddra',
+    'convert':'konvertera',
+    'deadwind':'Motvind',
+    'settings':'Inställningar',
+    'save' : 'spara',
+    'quit':'Avsluta'
+ }
 class MainWindow:
     def __init__(self, lang):
-        self.selectBTNText = "Bläddra"
-        self.saveBTNText = "konvertera"
         self.sc = ScheduleConverter()
-
         self.selectFileName=""
         self.addFileEntry = None
         self.saveFileEntry = None
@@ -23,7 +29,7 @@ class MainWindow:
         menubar.add_command(label=lang['settings'], command=self.openSettings)
         menubar.add_command(label=lang['quit'], command=root.quit)
         root.config(menu=menubar)
-        root.wm_title("Motvind")
+        root.wm_title(lang_main['deadwind'])
         root.iconbitmap(dir_path+r'\resources\cbt.ico')
 
         # Add a grid
@@ -38,9 +44,9 @@ class MainWindow:
         self.labelSelect.grid(row=0, column=0,padx="2")
         self.addFileEntry = tkinter.Entry(self.mainframe, bg='white', relief=SUNKEN,width=40)
         self.addFileEntry.grid(row=0,column=1, padx=2)
-        self.selectBTN = tkinter.Button(self.mainframe, text =self.selectBTNText, command = self.selectFile, width=20)
+        self.selectBTN = tkinter.Button(self.mainframe, text = lang_main['browse'], command = self.selectFile, width=20)
         self.selectBTN.grid(row=0, column=2, padx=2)
-        self.saveBTN = tkinter.Button(self.mainframe, text=self.saveBTNText,command = self.saveFile, width=20)
+        self.saveBTN = tkinter.Button(self.mainframe, text=lang_main['convert'],command = self.saveFile, width=20)
         self.saveBTN.grid(row=0, column=3 , padx=2)
         self.listBox = tkinter.Listbox(self.mainframe, bg='black',  fg='white')
         self.listBox.grid(row=1, columnspan=4, sticky=W+E+N+S)
@@ -54,6 +60,7 @@ class MainWindow:
     def openSettings(self):
         SettingsController()
 
+
     def selectFile(self):
         self.selectFileName = (
         filedialog.askopenfilename(initialdir = dir_path,title = "Select file",filetypes = (("csv  files xlsx","*.xlsx"),("all files","*.*"))))
@@ -61,7 +68,12 @@ class MainWindow:
 
     def saveFile(self):
         self.selectFileName = self.addFileEntry.get();
+        if self.selectFileName == "" or self.selectFileName == None :
+            tkinter.messagebox.showinfo("Ingen fil vald"," Vänligen välj en  fil att konvertera!")
+            return
         self.saveFileName = filedialog.asksaveasfilename(initialdir = dir_path,title = "Select file",filetypes = (("csv files","*.csv"),("all files","*.*")))
+        if self.saveFileName == None or self.saveFileName =="":
+            return
         self.listBox.delete(0,tkinter.END)
         try:
             events = ScheduleConverter().convert(self.selectFileName, self.saveFileName)
@@ -73,3 +85,7 @@ class MainWindow:
         except Exception as e:
             logging.exception("Something went wrong while parsing the file")
 MainWindow(lang_main)
+
+class MainController():
+    def __init__(self, arg):
+        MainWindow(lang_main)
