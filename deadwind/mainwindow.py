@@ -17,12 +17,16 @@ lang_main = {
     'save' : 'spara',
     'quit':'Avsluta'
  }
+
 class MainWindow:
     def __init__(self, lang):
+
         self.sc = ScheduleConverter()
         self.selectFileName=""
         self.addFileEntry = None
         self.saveFileEntry = None
+
+        self.convertFileEvent = settings.Event()
 
         root = tkinter.Tk()
         menubar = Menu(root)
