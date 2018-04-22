@@ -9,11 +9,13 @@ import settings
 import lang_se_sv
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-
+# The main graphical window
+# This is the first visible window that should be opened
 class MainWindow:
     def __init__(self, lang):
         self.sc = ScheduleConverter()
         self.lang = lang
+
         self.selectFileName=""
         self.addFileEntry = None
         self.saveFileEntry = None
@@ -79,4 +81,5 @@ class MainWindow:
             var = tkinter.messagebox.showinfo(self.lang['file_not_found_h'],"\""+ self.selectFileName+" \" "+self.lang['file_not_found_message'])
         except Exception as e:
             logging.exception("Something went wrong while parsing the file")
+
 MainWindow(lang_se_sv.lang_main)

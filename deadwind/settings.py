@@ -1,16 +1,7 @@
 import events
 import tkinter
 from csvio import DAO
-
-#TextFields subject, description and location
-lang = {
-          "settings" : "Inställningar",
-          "save" : "Spara",
-          "clear" : "rensa",
-          "subject" : "Ämne",
-          "description" : "beskrivning",
-          "location" : "plats"
-        }
+import lang_se_sv
 
 class SettingsView:
     def __init__(self,lang,settings):
@@ -142,7 +133,7 @@ class SettingsController:
 
     def __init__(self):
         self.dao = DAO()
-        self.settingsView = SettingsView(lang, self.dao.readSettings())
+        self.settingsView = SettingsView(lang_se_sv.lang_settings, self.dao.readSettings())
         self.settingsView.root.grab_set()
         self.settingsView.saveBTNClick.addListener(self.saveSettings)
 

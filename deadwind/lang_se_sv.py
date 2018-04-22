@@ -7,7 +7,6 @@ lang_settings = {
           "description" : "beskrivning",
           "location" : "plats"
          }
-
 lang_main = {
     'browse':'Bläddra',
     'file_path':'Filsökväg: ',
